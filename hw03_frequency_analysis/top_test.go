@@ -79,4 +79,35 @@ func TestTop10(t *testing.T) {
 			require.Equal(t, expected, Top10(text))
 		}
 	})
+	// Дополнительные тесты
+	t.Run("only spaces in string", func(t *testing.T) {
+		require.Len(t, Top10("      "), 0)
+	})
+
+	t.Run("Number of different words less than 10", func(t *testing.T) {
+		expected := []string{
+			"БББ", // 8
+			"AAA", // 3
+			"ССС", // 1
+		}
+		require.Equal(t, expected, Top10("AAA БББ AAA ССС БББ AAA БББ БББ БББ БББ БББ БББ"))
+	})
+
+	t.Run("different forms of the same word", func(t *testing.T) {
+		expected := []string{
+			"Ногу", // 2
+			"нога", // 2
+			"Нога", // 1
+			"нОГА", // 1
+		}
+		require.Equal(t, expected, Top10("Нога нОГА нога нога Ногу Ногу"))
+	})
+
+	t.Run("commas etc are parts of words", func(t *testing.T) {
+		expected := []string{
+			"Ногу,", // 3
+			"Ногу",  // 1
+		}
+		require.Equal(t, expected, Top10("Ногу, Ногу Ногу, Ногу,"))
+	})
 }
