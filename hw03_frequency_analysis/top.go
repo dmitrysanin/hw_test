@@ -26,9 +26,8 @@ func Top10(text string) []string {
 	sort.Slice(wordFreqSort, func(i, j int) bool {
 		if wordFreqSort[i].Freq == wordFreqSort[j].Freq {
 			return wordFreqSort[i].Word <= wordFreqSort[j].Word
-		} else {
-			return wordFreqSort[i].Freq > wordFreqSort[j].Freq
 		}
+		return wordFreqSort[i].Freq > wordFreqSort[j].Freq
 	})
 	result := make([]string, 0, 10)
 	for _, wordData := range wordFreqSort {
