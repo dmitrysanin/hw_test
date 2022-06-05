@@ -11,12 +11,11 @@ var ErrInvalidString = errors.New("invalid string")
 
 func Unpack(str string) (string, error) {
 	var b strings.Builder
-	var digitFlag bool = false
-	var prev_elem rune
-	var counter int = 1
+	digitFlag := false
+	var prevElem rune
+	counter := 1
 
 	for indx, elem := range str {
-
 		if unicode.IsDigit(elem) {
 			if indx == 0 || digitFlag {
 				return "", ErrInvalidString
@@ -24,21 +23,21 @@ func Unpack(str string) (string, error) {
 
 			counter, _ = strconv.Atoi(string(elem))
 			if counter > 0 {
-				b.WriteString(strings.Repeat(string(prev_elem), counter-1))
+				b.WriteString(strings.Repeat(string(prevElem), counter-1))
 			}
 			digitFlag = true
 		} else {
 			if counter > 0 {
-				b.WriteRune(prev_elem)
+				b.WriteRune(prevElem)
 			}
-			prev_elem = elem
+			prevElem = elem
 			counter = 1
 			digitFlag = false
 		}
 	}
 
 	if counter > 0 {
-		b.WriteRune(prev_elem)
+		b.WriteRune(prevElem)
 	}
 
 	return b.String()[1:], nil
