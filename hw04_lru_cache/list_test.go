@@ -47,5 +47,62 @@ func TestList(t *testing.T) {
 			elems = append(elems, i.Value.(int))
 		}
 		require.Equal(t, []int{70, 80, 60, 40, 10, 30, 50}, elems)
+
+		// Дополнительные тесты (граничные случаи):
+		l1 := NewList()
+
+		// Указатели на начало и конец списка при добавлении и удалении единственного элемента
+		l1.PushFront(10)
+		require.Equal(t, 10, l1.Front().Value)
+		require.Equal(t, 10, l1.Back().Value)
+
+		l1.Remove(l1.Front())
+		require.Equal(t, 0, l1.Len())
+		require.Nil(t, l1.Front())
+		require.Nil(t, l1.Back())
+
+		l1.PushFront(10)
+		l1.Remove(l1.Back())
+		require.Equal(t, 0, l1.Len())
+		require.Nil(t, l1.Front())
+		require.Nil(t, l1.Back())
+
+		l1.PushBack(10)
+		require.Equal(t, 10, l1.Front().Value)
+		require.Equal(t, 10, l1.Back().Value)
+
+		l1.Remove(l1.Front())
+		require.Equal(t, 0, l1.Len())
+		require.Nil(t, l1.Front())
+		require.Nil(t, l1.Back())
+
+		l1.PushBack(10)
+		l1.Remove(l1.Back())
+		require.Equal(t, 0, l1.Len())
+		require.Nil(t, l1.Front())
+		require.Nil(t, l1.Back())
+
+		// "Перемещение" единственного элемента в начало списка:
+		l1.PushFront(10)
+		l1.MoveToFront(l1.Front())
+		require.Equal(t, 10, l1.Front().Value)
+		require.Equal(t, 10, l1.Back().Value)
+
+		// Добавляем в начало списка элемент и переносим ставший последним в начало списка:
+		l1.PushFront(20)
+		l1.MoveToFront(l1.Back())
+		require.Equal(t, 10, l1.Front().Value)
+		require.Equal(t, 20, l1.Back().Value)
+
+		// Меняем местами:
+		l1.MoveToFront(l1.Back())
+		require.Equal(t, 20, l1.Front().Value)
+		require.Equal(t, 10, l1.Back().Value)
+
+		// Удаляем последний, а оставшийся единственный "перемещаем" в начало списка
+		l1.Remove(l1.Back())
+		l1.MoveToFront(l1.Back())
+		require.Equal(t, 20, l1.Front().Value)
+		require.Equal(t, 20, l1.Back().Value)
 	})
 }
