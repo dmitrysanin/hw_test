@@ -8,7 +8,30 @@ type (
 
 type Stage func(in In) (out Out)
 
+func proxi(done In, in In) Out {
+	out := make(Bi)
+
+	go func() {
+		defer close(out)
+		for {
+			select {
+			case <-done:
+				return
+			case v, ok := <-in:
+				if !ok {
+					return
+				}
+				out <- v
+			}
+		}
+	}()
+	return out
+}
+
 func ExecutePipeline(in In, done In, stages ...Stage) Out {
-	// Place your code here.
-	return nil
+	inCh := in
+	for _, stage := range stages {
+		inCh = stage(proxi(done, inCh))
+	}
+	return inCh
 }
